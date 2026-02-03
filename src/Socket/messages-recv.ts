@@ -1359,10 +1359,10 @@ export const makeMessagesRecvSocket = (config: SocketConfig) => {
 			call.isVideo = !!getBinaryNodeChild(infoChild, 'video')
 			call.isGroup = infoChild.attrs.type === 'group' || !!infoChild.attrs['group-jid']
 			call.groupJid = infoChild.attrs['group-jid']
-			await callOfferCache.set(call.id, call)
+			await callOfferCache.set(String(call.id), call)
 		}
 
-		const existingCall = await callOfferCache.get<WACallEvent>(call.id)
+		const existingCall = await callOfferCache.get<WACallEvent>(String(call.id))
 
 		// use existing call info to populate this event
 		if (existingCall) {
@@ -1372,7 +1372,7 @@ export const makeMessagesRecvSocket = (config: SocketConfig) => {
 
 		// delete data once call has ended
 		if (status === 'reject' || status === 'accept' || status === 'timeout' || status === 'terminate') {
-			await callOfferCache.del(call.id)
+			await callOfferCache.del(String(call.id))
 		}
 
 		ev.emit('call', [call])
@@ -1571,7 +1571,7 @@ export const makeMessagesRecvSocket = (config: SocketConfig) => {
 					msg.messageStubType = call.isVideo ? WAMessageStubType.CALL_MISSED_VIDEO : WAMessageStubType.CALL_MISSED_VOICE
 				}
 			} else {
-				msg.message = { call: { callKey: Buffer.from(call.id) } }
+				msg.message = { call: { callKey: Buffer.from(String(call.id)) } }
 			}
 
 			const protoMsg = proto.WebMessageInfo.fromObject(msg) as WAMessage
