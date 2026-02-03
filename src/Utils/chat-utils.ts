@@ -20,7 +20,8 @@ import {
 } from '../Types/LabelAssociation'
 import { type BinaryNode, getBinaryNodeChild, getBinaryNodeChildren, isJidGroup, jidNormalizedUser } from '../WABinary'
 import { aesDecrypt, aesEncrypt, hkdf, hmacSign } from './crypto'
-import { toNumber } from './generics'
+import { getCallStatus, toNumber } from './generics'
+import Long from "long"
 import type { ILogger } from './logger'
 import { LT_HASH_ANTI_TAMPERING } from './lt-hash'
 import { downloadContentFromMessage } from './messages-media'
@@ -944,7 +945,27 @@ export const processSyncAction = (
 			setting: 'channelsPersonalisedRecommendation',
 			value: action.privacySettingChannelsPersonalisedRecommendationAction
 		})
-	} else {
+	} else if (action?.callLogAction) {
+		const { callLogRecord } = action.callLogAction
+		const startTime = action?.timestamp
+		const timestampSeconds = Long.fromValue(String(startTime)).toNumber()
+		const participant = callLogRecord?.participants?.[0]
+		ev.emit('call.log', [{
+			chatId: callLogRecord?.groupJid ? callLogRecord?.groupJid : String(participant?.userJid),
+			from: callLogRecord?.groupJid ? callLogRecord?.groupJid : String(participant?.userJid),
+			remoteJidAlt: id!,
+			isGroup: callLogRecord?.groupJid ? true : false,
+			groupJid: action?.callLogAction.callLogRecord?.groupJid ?? undefined,
+			id: String(callLogRecord?.callId),
+			date: new Date(timestampSeconds),
+			isVideo: Boolean(action.callLogAction?.callLogRecord?.isVideo),
+			status: participant?.callResult !== undefined ? getCallStatus({ tag: Number(participant?.callResult)}) : 'terminate',
+			fromMe: fromMe === '0',
+			offline: undefined,
+			latencyMs: undefined
+		}])
+	} 
+	else {
 		logger?.debug({ syncAction, id }, 'unprocessable update')
 	}
 

@@ -375,6 +375,23 @@ export const getErrorCodeFromStreamError = (node: BinaryNode) => {
 	}
 }
 
+export const getCallStatus = ({ tag } : { tag: number}) => {
+	let status: WACallUpdateType
+	switch (tag) {
+		case proto.CallLogRecord.CallResult.MISSED:
+			status = 'terminate'
+			break
+		case proto.CallLogRecord.CallResult.REJECTED:
+			status = 'reject'
+			break
+		default:
+			status = 'terminate'
+			break
+	}
+
+	return status
+}
+
 export const getCallStatusFromNode = ({ tag, attrs }: BinaryNode) => {
 	let status: WACallUpdateType
 	switch (tag) {
