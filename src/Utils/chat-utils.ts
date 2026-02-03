@@ -953,7 +953,6 @@ export const processSyncAction = (
 		ev.emit('call.log', [{
 			chatId: callLogRecord?.groupJid ? callLogRecord?.groupJid : String(participant?.userJid),
 			from: callLogRecord?.groupJid ? callLogRecord?.groupJid : String(participant?.userJid),
-			remoteJidAlt: id!,
 			isGroup: callLogRecord?.groupJid ? true : false,
 			groupJid: action?.callLogAction.callLogRecord?.groupJid ?? undefined,
 			id: String(callLogRecord?.callId),
