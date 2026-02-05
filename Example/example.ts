@@ -3,6 +3,7 @@ import NodeCache from '@cacheable/node-cache'
 import readline from 'readline'
 import makeWASocket, { CacheStore, DEFAULT_CONNECTION_CONFIG, DisconnectReason, fetchLatestBaileysVersion, generateMessageIDV2, getAggregateVotesInPollMessage, isJidNewsletter, makeCacheableSignalKeyStore, proto, useMultiFileAuthState, WAMessageContent, WAMessageKey } from '../src'
 import P from 'pino'
+import qrCodeGenerate from 'qrcode-terminal'
 
 const logger = P({
   level: "trace",
@@ -85,6 +86,7 @@ const startSock = async() => {
 				}
 
 				if (qr) {
+					qrCodeGenerate.generate(qr, {small: true});
 					// Pairing code for Web clients
 					if (usePairingCode && !sock.authState.creds.registered) {
 						const phoneNumber = await question('Please enter your phone number:\n')
@@ -209,6 +211,10 @@ const startSock = async() => {
 						logger.debug({id: contact.id, newUrl}, `contact has a new profile pic` )
 					}
 				}
+			}
+
+			if(events['call.log']){
+				console.log(JSON.stringify(events['call.log'], null, 2))
 			}
 
 			if(events['chats.delete']) {

@@ -17,7 +17,7 @@ export type WACallEvent = {
 export type WACallEventMe ={
 	key: {
 		remoteJid: string
-		participant: string,
+		participant?: string,
 		fromMe: boolean,
 		id: string
 	}, message: {
