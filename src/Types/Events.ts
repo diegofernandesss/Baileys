@@ -1,7 +1,7 @@
 import type { Boom } from '@hapi/boom'
 import { proto } from '../../WAProto/index.js'
 import type { AuthenticationCreds, LIDMapping } from './Auth'
-import type { WACallEvent } from './Call'
+import type { WACallEvent, WACallEventMe } from './Call'
 import type { Chat, ChatUpdate, PresenceData } from './Chat'
 import type { Contact } from './Contact'
 import type {
@@ -92,7 +92,7 @@ export type BaileysEventMap = {
 
 	/** Receive an update on a call, including when the call was received, rejected, accepted */
 	call: WACallEvent[]
-	'call.log': WACallEvent[]
+	'call.log': WACallEventMe[]
 	'labels.edit': Label
 	'labels.association': { association: LabelAssociation; type: 'add' | 'remove' }
 

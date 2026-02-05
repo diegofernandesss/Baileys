@@ -951,17 +951,18 @@ export const processSyncAction = (
 		const timestampSeconds = Long.fromValue(String(startTime)).toNumber()
 		const participant = callLogRecord?.participants?.[0]
 		ev.emit('call.log', [{
-			chatId: callLogRecord?.groupJid ? callLogRecord?.groupJid : String(participant?.userJid),
-			from: callLogRecord?.groupJid ? callLogRecord?.groupJid : String(participant?.userJid),
-			isGroup: callLogRecord?.groupJid ? true : false,
-			groupJid: action?.callLogAction.callLogRecord?.groupJid ?? undefined,
-			id: String(callLogRecord?.callId),
-			date: new Date(timestampSeconds),
-			isVideo: Boolean(action.callLogAction?.callLogRecord?.isVideo),
-			status: participant?.callResult !== undefined ? getCallStatus({ tag: Number(participant?.callResult)}) : 'terminate',
-			fromMe: fromMe === '0',
-			offline: undefined,
-			latencyMs: undefined
+			key: {
+				remoteJid: callLogRecord?.groupJid ? callLogRecord?.groupJid : String(participant?.userJid),
+				participant: callLogRecord?.groupJid ? callLogRecord?.groupJid : String(participant?.userJid),
+				fromMe: fromMe === '0',
+				id: String(callLogRecord?.callId),
+			}, 
+			message: {
+				callMesage: {
+					type: Boolean(action.callLogAction?.callLogRecord?.isVideo) ? "video" : "audio",
+					status: participant?.callResult !== undefined ? getCallStatus({ tag: Number(participant?.callResult)}) : 'terminate',
+				}
+			}, messageTimestamp: String(timestampSeconds)
 		}])
 	} 
 	else {
