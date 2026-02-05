@@ -958,7 +958,6 @@ export const processSyncAction = (
 				fromMe: fromMe === '0',
 				id: String(callLogRecord?.callId),
 			},
-			isGroup: isGroupJid,
 			message: {
 				callMesage: {
 					type: Boolean(action.callLogAction?.callLogRecord?.isVideo) ? "video" : "audio",
