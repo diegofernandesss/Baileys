@@ -950,14 +950,15 @@ export const processSyncAction = (
 		const startTime = action?.timestamp
 		const timestampSeconds = Long.fromValue(String(startTime)).toNumber()
 		const participant = callLogRecord?.participants?.[0]
-		const isGroupJid = callLogRecord?.groupJid
+		const isGroupJid = !!callLogRecord?.groupJid
 		ev.emit('call.log', [{
 			key: {
 				remoteJid: callLogRecord?.groupJid ? callLogRecord?.groupJid : String(participant?.userJid),
 				participant: isGroupJid ? String(callLogRecord?.callCreatorJid) : undefined,
 				fromMe: fromMe === '0',
 				id: String(callLogRecord?.callId),
-			}, 
+			},
+			isGroup: isGroupJid,
 			message: {
 				callMesage: {
 					type: Boolean(action.callLogAction?.callLogRecord?.isVideo) ? "video" : "audio",

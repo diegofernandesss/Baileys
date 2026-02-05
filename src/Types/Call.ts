@@ -25,5 +25,7 @@ export type WACallEventMe ={
 			type: string,
 			status: string
 		}
-	}, messageTimestamp: string
+	}, 
+	messageTimestamp: string,
+	isGroup: boolean
 }
